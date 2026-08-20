@@ -12,6 +12,8 @@ This is the underwriting coverage page. Use a clear eight-column layout when pra
 
 IPO rows must include only `IPO高` and `IPO中`. Public-market rows must include every current `上市`, `上櫃`, `興櫃`, or `公開發行（未上市櫃）` entity that is in scope with confidence A or B. Reconcile names and counts to `Company Universe`; do not manually curate a conflicting summary list. If a section is empty, retain its header and show `本次未發現符合條件者`.
 
+The snapshot and both candidate tables must display correctly before workbook recalculation. Prefer deterministic as-of values, or populate valid cached formula results. A preview showing zero or blank counts while detail rows exist fails QA.
+
 ## Company Universe
 
 One row per legal entity. Minimum columns:
@@ -23,6 +25,16 @@ For current Taiwan companies, effective capital is current paid-in capital when 
 In underwriting mode, include verified officer-extension companies as Company Universe rows so they can participate in IPO/SPO screening. Keep unresolved exact-name matches in `Officer Network` only unless another primary source corroborates identity. Officer-only rows must state that the connection is not ownership evidence.
 
 Deduplicate Taiwan companies by unified business number. Keep multiple relationship edges in `Ownership & Investments`, not duplicate company rows.
+
+Also include `Category`, `Business`, `Relationship person`, `Relationship evidence type`, `Full relationship path`, and `Source ID` when the workbook is used for customer development. These fields are required to connect the entity master to the relationship map.
+
+## Relationship & Coverage Map
+
+One row per distinct commercial introduction path, not merely one row per company:
+
+`Target company`, `Market/priority`, `Anchor`, `Relationship person`, `Relationship evidence type`, `Full introduction path`, `Effective capital`, `Business`, `Coverage product`, `Suggested first action`, `Evidence confidence`, `Source ID`, `Source locator`, `Relationship boundary`.
+
+Retain parallel paths such as direct investment, officer role, major shareholder, or strategic shareholder. State `非持股證據` whenever the edge is a governance, employment, biography, or shareholder-introduction link rather than disclosed ownership.
 
 ## Ownership & Investments
 
@@ -46,6 +58,14 @@ One row per person-company role:
 
 Use `Identity status` values `已核實`, `同名待核實`, or `非同一人`. Officer links are never ownership links unless a separate ownership source exists.
 
+## Major Shareholder Expansion
+
+One row per major-shareholder record and expansion decision:
+
+`Anchor company`, `Major shareholder`, `Ownership %`, `As-of date`, `Shareholder type`, `Identity/role evidence`, `Verified expansion companies`, `Expansion path`, `Coverage use`, `Treatment`, `Source ID`, `Source locator`, `Boundary/notes`.
+
+Separate Taiwan corporate shareholders, foreign corporate shareholders, identity-verified natural persons, nominee/custody accounts, employee omnibus accounts, and unresolved holders. Do not infer beneficial owners behind custody, SBL/PB, proprietary-trading, or employee omnibus accounts.
+
 ## Sources & Definitions
 
 Include:
@@ -56,3 +76,7 @@ Include:
 - capital-market status precedence;
 - accounting units and currency rules;
 - research limitations and unresolved items.
+
+## Source Trace
+
+Store one row per entity or relationship node with the root-to-target path, node label, evidence locator, source URL, and relationship boundary. It must be possible to trace every first-page IPO/public-market target back to the root through at least one documented path.

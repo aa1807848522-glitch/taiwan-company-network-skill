@@ -36,6 +36,8 @@ An entity enters the first-page IPO priority table only when all conditions are 
 - effective capital is available;
 - it is an operating company, or there is evidence that an investment/holding vehicle has an IPO-relevant operating business.
 
+The fact that an entity has high paid-in capital is not operating evidence. Use registered business items, the issuer's official description, financial-statement operating disclosures, or an explicit normalized field such as `is_operating_company`. Treat pure investment platforms, corporate venture vehicles, nominee/custody entities, and group shareholding tools as `生態系轉介／觀察`, even when capital exceeds the IPO threshold.
+
 Assign:
 
 | Priority | Effective capital | First-page treatment |
@@ -59,6 +61,8 @@ Every current in-scope company with confidence A or B and one of the following s
 
 Officer-only public companies may be included only after the person link is corroborated. Their relationship text must say `代表人／董監事延伸；非集團持股證據`.
 
+Annual-report major-shareholder paths may be included after the shareholder identity and target company are corroborated. Label the path `年報主要股東延伸；非控制證據` unless a separate ownership/control source supports a stronger relationship. Never use a custodian, nominee bank, SBL/PB account, employee omnibus account, or unidentified trading account as the target's beneficial owner.
+
 ## Required output fields
 
 Populate these fields for every Company Universe row:
@@ -80,3 +84,4 @@ Never leave generic `未評估` text. Use an explicit exclusion such as `非台�
 - IPO sort: `IPO高`, then `IPO中`, then effective capital descending.
 - Public-market sort: `上市`, `上櫃`, `興櫃`, `公開發行（未上市櫃）`, then effective capital descending.
 - Candidate counts and names must reconcile exactly. Use formulas or a deterministic pre-build screen; never maintain an independent hand-edited summary list.
+- The rendered or Quick Look first page must show the reconciled values without requiring the user to trigger recalculation.

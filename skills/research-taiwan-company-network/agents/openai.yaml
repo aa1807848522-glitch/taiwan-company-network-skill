@@ -1,4 +1,4 @@
 interface:
   display_name: "台灣公司關聯研究"
-  short_description: "從公司名稱、統編或股票代號建立關係企業與承銷潛客研究表"
-  default_prompt: "請用 $research-taiwan-company-network，從公司名稱、統編或股票代號出發，完成有來源依據的公司關聯研究並輸出 Excel。"
+  short_description: "從公司、年報股東與董監高網絡建立IPO／SPO承銷潛客研究表"
+  default_prompt: "請用 $research-taiwan-company-network，從公司名稱、統編或股票代號出發，沿法定投資、年報主要股東與董監高網絡擴展，完成有來源依據的公司關聯與IPO／SPO潛客研究並輸出 Excel。"

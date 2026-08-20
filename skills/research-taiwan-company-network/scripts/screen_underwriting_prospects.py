@@ -12,8 +12,8 @@ from typing import Any
 PUBLIC_MARKETS = {
     "上市": ("SPO／再籌資", "公開市場覆蓋", "SPO、現增、可轉債、私募、策略股東或其他股權資本市場需求", 0),
     "上櫃": ("SPO／再籌資", "公開市場覆蓋", "SPO、現增、可轉債、私募、策略股東或其他股權資本市場需求", 1),
-    "興櫃": ("轉板／再籌資", "轉板優先", "上市／上櫃轉板、現增與掛牌前資本規劃", 2),
-    "公開發行（未上市櫃）": ("掛牌／再籌資", "掛牌路徑", "興櫃／上市櫃路徑、股權結構與再籌資規劃", 3),
+    "興櫃": ("轉板／再籌資", "公開市場覆蓋", "上市／上櫃轉板、現增與掛牌前資本規劃", 2),
+    "公開發行（未上市櫃）": ("掛牌／再籌資", "公開市場覆蓋", "興櫃／上市櫃路徑、股權結構與再籌資規劃", 3),
 }
 PRIVATE_MARKETS = {"未公發（依MOPS名單比對）", "未公發／未上市櫃", "未公發"}
 HISTORICAL_TERMS = ("歷史", "退出", "清算", "解散", "撤銷", "廢止", "合併消滅")
@@ -68,8 +68,12 @@ def is_historical(row: dict[str, Any]) -> bool:
 
 
 def has_operating_evidence(row: dict[str, Any], name: str) -> bool:
-    if is_true(first(row, "operating_company_evidence", "is_operating_company", default=False)):
-        return True
+    explicit = first(row, "operating_company_evidence", "is_operating_company", default=None)
+    if explicit is not None:
+        return is_true(explicit)
+    role_text = str(first(row, "entity_function", "company_role", "business_type", default="")).lower()
+    if any(term in role_text for term in ("投資平台", "純投資", "控股工具", "受託保管", "nominee", "custody")):
+        return False
     lowered = name.lower()
     return not any(term in lowered for term in INVESTMENT_VEHICLE_TERMS)
 
