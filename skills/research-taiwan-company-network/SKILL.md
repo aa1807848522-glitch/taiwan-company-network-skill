@@ -9,6 +9,8 @@ description: Research a Taiwan company from a company name, 8-digit unified busi
 
 Turn one Taiwan company identifier into an auditable company-network workbook. Default to `.xlsx`; produce `.docx` only when the user explicitly asks for a narrative report. Never create an XMind file unless explicitly requested.
 
+Unless the user explicitly opts out of underwriting prospecting, make the first worksheet an actionable coverage page. It must name the qualifying IPO candidates and the public-market SPO／轉板／再籌資 targets; prospect fields may not be left as generic `未評估` placeholders when the available registry and market data are sufficient to classify them.
+
 Separate legally evidenced ownership or control from officer-only associations. Treat completeness as a documented research scope, not a claim that every private investment is publicly observable.
 
 ## Start
@@ -79,13 +81,23 @@ Never infer parent-subsidiary status from a shared surname, shared officer, grou
 
 For Taiwan entities, record GCIS registration status, registered capital, paid-in capital, representative, address, setup date, and latest registry change. Determine capital-market status from current MOPS/TWSE open data using this precedence:
 
-`上市` → `上櫃` → `興櫃` → `公開發行未上市櫃` → `未公發／未上市櫃`.
+`上市` → `上櫃` → `興櫃` → `公開發行（未上市櫃）` → `未公發（依MOPS名單比對）`.
 
-If a company is dissolved, revoked, merged, liquidated, or historical, preserve that status even if an old market code exists. Reconcile capital differences between GCIS and MOPS by retaining both values and their dates rather than silently choosing one.
+Use `未公發（依MOPS名單比對）` only for a Taiwan company whose current registry status is `核准設立` and whose unified business number is absent from all four current MOPS market catalogs. For inactive Taiwan entities and foreign entities, use `未見於目前公開市場名單` unless stronger evidence supports a more specific status. If a company is dissolved, revoked, merged, liquidated, or historical, preserve that status even if an old market code exists. Reconcile capital differences between GCIS and MOPS by retaining both values and their dates rather than silently choosing one.
 
 ### 6. Apply banking prospecting fields
 
-When the purpose includes underwriting prospects, add separate preliminary fields for `IPO潛力` and `SPO／籌資潛力`. Base them on observable indicators such as market status, paid-in capital, growth funding, recent capital increases, public-company maturity, strategic investors, and disclosed expansion. Label these as screening judgments, not verified mandates or recommendations.
+Unless the user explicitly asks for legal-network research only, read `references/underwriting-screen.md` and apply it after the Company Universe is stable. Run `scripts/screen_underwriting_prospects.py` when the entity data can be normalized to JSON; otherwise apply the same rules directly and document any deviation.
+
+The screen must:
+
+- derive an auditable `有效資本額` from current Taiwan registry data;
+- assign an explicit coverage type, priority, rationale, and suggested entry direction;
+- exclude inactive or historical entities, foreign entities without comparable Taiwan capital evidence, and unresolved homonyms from IPO priority counts;
+- retain verified officer-only prospects but label the relationship as non-ownership evidence;
+- reconcile the candidate counts and names shown on `Executive Summary` to the detailed rows in `Company Universe`.
+
+These are preliminary coverage judgments, not verified mandates or recommendations. If evidence is insufficient, use a specific result such as `資料不足`, `低於規模門檻`, `歷史／退出`, or `同名待核實排除` instead of `未評估`.
 
 ## Build the workbook
 
@@ -99,6 +111,15 @@ Use the `spreadsheets:Spreadsheets` skill to create and verify the `.xlsx`. Foll
 - `Sources & Definitions`
 
 Make all detail ranges filterable tables. Freeze headers, wrap long text, format TWD and TWD-thousand columns explicitly, and use conditional formatting for market status, inactive companies, and unresolved evidence. Include clickable source URLs and source locators in the workbook. Do not rely on cell color as the only carrier of meaning.
+
+The first worksheet is a coverage dashboard, not only a research summary. It must visibly contain, in this order:
+
+1. an executive snapshot;
+2. `IPO候選：未公發且具規模之優先覆蓋公司` with qualifying company names, effective capital, representative, relationship anchor, priority, rationale, and registry status;
+3. `SPO／轉板／再籌資覆蓋：已公開市場公司` with company name, stock code, market status, effective capital, network relationship, suggested entry direction, representative, and notes;
+4. next-step coverage actions and evidence gaps.
+
+Sort IPO candidates by `IPO高` before `IPO中`, then effective capital descending. Sort public-market coverage by market path and effective capital descending. When a section has no qualifying company, show one explicit `本次未發現符合條件者` row rather than omitting the section.
 
 Before delivery, verify formulas, row counts, duplicate unified business numbers, ownership percentages, period units, and source coverage. Render or inspect the workbook visually according to the spreadsheet skill. Deliver only the final workbook and concise caveats; keep intermediate JSON and downloads in a supporting-data subfolder.
 
@@ -123,6 +144,10 @@ If evidence conflicts, preserve both observations, explain the date or scope dif
 - Ownership and officer-only associations are separated.
 - Public-market status is current as of the research date.
 - Capital source and date are recorded.
+- Effective capital basis is explicit and uses consistent TWD units.
+- Every eligible company has a non-placeholder underwriting classification or a documented exclusion reason.
+- Executive Summary visibly lists IPO high/medium candidates and all current public-market coverage companies.
+- Executive Summary candidate counts and names reconcile to Company Universe.
 - Investment P&L includes period and unit and avoids double counting.
 - Historical and inactive entities are visible, not deleted.
 - Material officer matches are confirmed or labeled as homonyms.

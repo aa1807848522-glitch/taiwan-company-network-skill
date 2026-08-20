@@ -27,7 +27,7 @@ Download the current company catalogs and map by unified business number first, 
 | Emerging | `https://mopsfin.twse.com.tw/opendata/t187ap03_R.csv` |
 | Public but not listed/OTC | `https://mopsfin.twse.com.tw/opendata/t187ap03_P.csv` |
 
-Do not classify “not found in the four current catalogs” as definitely private when the registry is inactive or the entity is foreign. Use `未見於目前公開市場名單` unless current evidence supports `未公發`.
+For a Taiwan company whose current registry status is `核准設立`, absence by unified business number from all four current catalogs may be labeled `未公發（依MOPS名單比對）` for underwriting screening, with the catalog date recorded. This is a dated screening label, not an official non-public certificate. When the registry is inactive, the entity is foreign, or identity is unresolved, use `未見於目前公開市場名單` unless stronger current evidence supports a more specific status.
 
 ## Ownership, subsidiaries, and investments
 
